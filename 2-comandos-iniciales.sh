@@ -50,8 +50,11 @@ docker inspect CONTAINER_ID| less
 #comando para inspeccionar el contenedor con la IP
 docker inspect CONTAINER_ID| grep IPAddress
 
-#comando para para un contenedor
+#comando para parar un contenedor
 docker stop CONTAINER_ID
+
+#comando para parar todos los contenedores
+docker stop $(docker ps -aq)
 
 #comando para borrar un contenedor
 docker rm CONTAINER_ID
@@ -83,7 +86,50 @@ apt install psmisc
 #Mostrar los mensajes de los contenedores activos
 docker logs NAMES
 
-#
+#Crear nuestra propia imagen
+docker commit CONTAINER_ID NOMBRE_IMAGEN
+docker commit apache miweb:latest
+
+#mirar la imagen creada
+docker images
+
+#crear un contenedor con la imagen creada
+docker run -d --name miwebejemplo miweb
+docker run -d -p 8080:80 miweb
+
+#ver la ip del contenedor creado
+docker inspect miwebejemplo | grep IPA
+
+#directivas de dockerfile y crear directivas de la nueva imagen
+nano Dockerfile
+
+#dentro de las directivas de dockerfile 
+From debian:latest
+RUN apt update && apt install -y apache2
+WORKDIR /var/wwww/html/
+COPY index.html .
+CMD ["/usr/sbin/apache2ctl","-D","FOREGROUND"]
+
+#se puede mirar la directivas con el comando
+cat Dockerfile
+
+#creacion de imagen debianapache latest
+docker build -t debianapache:latest .
+
+#arrancar la imagen debianapache
+docker run -d --name miapache  debianapache
+
+#ver el historial de la imagen creada
+docker history debianapache
+
+#ver la información del historial
+docker info | less
+
+#compartir información entre contenedores
+docker run -d --name miapache2 --volumes-from miapache debianapache
+
+
+
 
 
 
