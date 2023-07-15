@@ -128,6 +128,41 @@ docker info | less
 #compartir información entre contenedores
 docker run -d --name miapache2 --volumes-from miapache debianapache
 
+#mirar la IP en el anfitrion
+ip -c a
+
+#comando para mirar puertos en el anfitrion
+ss -ltp
+
+#creacion de un contenedor con un puerto especifico
+docker run -p 8081:80 -d --name apache3 httpd
+
+#miramos y copiamos la inet con el puerto creado IP anfitrion, despues del comando ip -c a en un buscador deberia aparecer el It works!
+http://147.182.200.204:8081/
+
+#gestion de redes en docker
+docker network ls
+
+#lanzar a un servidor web en una red ssh comenzamos ingresando con dockerfile
+nano Dockerfile
+
+#dentro de las directivas de dockerfile copiamos lo siguiente
+FROM debian: stable-slim
+ARG PAQUETE \ 
+    ENUM
+RUN apt-get update && apt-get install -y $PAQUETE
+ENV EJERCICIO=$ENUM
+RUN echo 'echo el ejercicio es: $EJERCICIO' >> /root/.bashrc
+
+RUN apt-get install -y ssh \
+    && echo "PermitRoot Login yes" >> /etc/ssh/sshd_config
+EXPOSE 22
+ENV CLAVE=root
+COPY set-clave-root.sh /root/set-clave-root.sh
+RUN chmod +x /root/set-clave-root.sh
+
+ENTRYPOINT service ssh restart && /root/set-clave-root.sh && bash
+
 
 
 
