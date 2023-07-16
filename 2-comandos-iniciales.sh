@@ -163,7 +163,73 @@ RUN chmod +x /root/set-clave-root.sh
 
 ENTRYPOINT service ssh restart && /root/set-clave-root.sh && bash
 
+#DOCKER COMPOSE
+#instalar bases de datos docker compose con mariadb y variable de entorno compatible con wordpress y una red para que se comuniquen
+docker run --name basesdedatos --net=my-network -e MARIADB_ROOT_PASSWORD=123 -e MARIADB_DATABASE=wp -d mariadb:latest
 
+#creacion de la red
+docker network create my-network
+
+#instalar wordpress con docker compose variable de entorno funcionando la bd
+docker run --name wordpress --net=my-network -e WORDPRESS_DB_HOST=basesdedatos -e WORDPRESS_DB_USER=root -e WORDPRESS_DB_PASSWORD=123 -e WORDPRESS_DB_NAME=wp -p 8080:80 -d wordpress:latest
+
+#inspeccinamos la red y copiamos la ip para conectarme al wordpress
+docker inspect my-network
+
+#instalar docker compose verificar para cambiar la version si es necesario
+https://docs.docker.com/compose/install/standalone/
+
+curl -SL https://github.com/docker/compose/releases/download/v2.20.0/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose
+
+#verificar si esta instalado
+docker-compose --version
+
+#creammos un directorio para el docker compose y entramos con cd
+mkdir wordpres-mdb
+
+#Posterior creamos un archivo docker-compose.yml
+nano docker-compose.yml
+
+#dentro del archivo docker-compose.yml copiamos lo siguiente
+version: "3"
+
+services:
+  db:
+    image: mariadb:latest
+    environment:
+      MARIADB_ROOT_PASSWORD= 123
+      MARIADB_DATABASE= wp
+
+  wordpress:
+    depends_on:
+      - db
+    image: wordpress:latest
+    environment:
+      WORDPRESS_DB_HOST= db
+      WORDPRESS_DB_USER= root
+      WORDPRESS_DB_PASSWORD= 123
+
+#comando para ejecutar docker compose
+docker-compose up -d
+
+#comando para parar y eliminar docker compose
+docker-compose down
+
+#DOCKER HUB 
+#crear una cuenta en docker hub
+https://hub.docker.com/
+
+#crear un repositorio en docker hub
+https://hub.docker.com/repository/create
+
+#crear un tag para subir la imagen al repositorio
+docker image tag debianapache:latest nombre_usurio/debianapache:latest
+
+#logearse en docker hub para subir la imagen al repositorio
+docker login
+
+#subir la imagen al repositorio
+docker push nombre_usurio/debianapache:latest
 
 
 
