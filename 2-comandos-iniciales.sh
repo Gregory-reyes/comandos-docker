@@ -17,9 +17,6 @@ docker ps -n 5
 docker ps -f status=exited
 docker ps -f "name=NAMES"
 
-#docker images
-docker images
-
 #interactuar con el docker inactivo y entrar al contenedor y ejecutar instruciones
 docker run -it debian bash
 
@@ -28,15 +25,6 @@ apt-get update
 
 #instalar el nano
 apt-get install nano
-
-#colocarle un nombre a la imagen
-docker run -it --name Prueba debian bash
-
-#Borrar una imagen
-docker rm Prueba
-
-#borrar todas las imagenes que ya tienen stop
-docker rm $(docker ps -aq)
 
 #descargar contenedor servidor web apache
 docker run httpd
@@ -58,6 +46,9 @@ docker stop $(docker ps -aq)
 
 #comando para borrar un contenedor
 docker rm CONTAINER_ID
+
+#comando para borrar todos los contenedores
+docker container prune
 
 #comando para ayuda en docker
 docker --help
@@ -89,9 +80,6 @@ docker logs NAMES
 #Crear nuestra propia imagen
 docker commit CONTAINER_ID NOMBRE_IMAGEN
 docker commit apache miweb:latest
-
-#mirar la imagen creada
-docker images
 
 #crear un contenedor con la imagen creada
 docker run -d --name miwebejemplo miweb
@@ -230,6 +218,17 @@ docker login
 
 #subir la imagen al repositorio
 docker push nombre_usurio/debianapache:latest
+
+#KUBERNETES 
+https://kubernetes.io/docs/home/
+
+#instalar kubernetes Set up a K8s cluster -> Learning environment -> Minikube ->debian package
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube_latest_amd64.deb
+sudo dpkg -i minikube_latest_amd64.deb
+
+#Instalar un hypervisor para minikube
+
+
 
 
 
