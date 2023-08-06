@@ -13,10 +13,6 @@ docker ps -l
 #mirar los ultimos 5 contenedores creados
 docker ps -n 5
 
-#mirar el contendor con filtro
-docker ps -f status=exited
-docker ps -f "name=NAMES"
-
 #interactuar con el docker inactivo y entrar al contenedor y ejecutar instruciones
 docker run -it debian bash
 
@@ -31,24 +27,6 @@ docker run httpd
 
 #"RECOMENDADO"descargar contenedor servidor web apache 2 plano
 docker run -d httpd
-
-#comando para inspeccionar el contenedor
-docker inspect CONTAINER_ID| less
-
-#comando para inspeccionar el contenedor con la IP
-docker inspect CONTAINER_ID| grep IPAddress
-
-#comando para parar un contenedor
-docker stop CONTAINER_ID
-
-#comando para parar todos los contenedores
-docker stop $(docker ps -aq)
-
-#comando para borrar un contenedor
-docker rm CONTAINER_ID
-
-#comando para borrar todos los contenedores
-docker container prune
 
 #comando para ayuda en docker
 docker --help
@@ -76,14 +54,6 @@ apt install psmisc
 
 #Mostrar los mensajes de los contenedores activos
 docker logs NAMES
-
-#Crear nuestra propia imagen
-docker commit CONTAINER_ID NOMBRE_IMAGEN
-docker commit apache miweb:latest
-
-#crear un contenedor con la imagen creada
-docker run -d --name miwebejemplo miweb
-docker run -d -p 8080:80 miweb
 
 #ver la ip del contenedor creado
 docker inspect miwebejemplo | grep IPA
@@ -128,9 +98,6 @@ docker run -p 8081:80 -d --name apache3 httpd
 #miramos y copiamos la inet con el puerto creado IP anfitrion, despues del comando ip -c a en un buscador deberia aparecer el It works!
 http://147.182.200.204:8081/
 
-#gestion de redes en docker
-docker network ls
-
 #lanzar a un servidor web en una red ssh comenzamos ingresando con dockerfile
 nano Dockerfile
 
@@ -155,14 +122,8 @@ ENTRYPOINT service ssh restart && /root/set-clave-root.sh && bash
 #instalar bases de datos docker compose con mariadb y variable de entorno compatible con wordpress y una red para que se comuniquen
 docker run --name basesdedatos --net=my-network -e MARIADB_ROOT_PASSWORD=123 -e MARIADB_DATABASE=wp -d mariadb:latest
 
-#creacion de la red
-docker network create my-network
-
 #instalar wordpress con docker compose variable de entorno funcionando la bd
 docker run --name wordpress --net=my-network -e WORDPRESS_DB_HOST=basesdedatos -e WORDPRESS_DB_USER=root -e WORDPRESS_DB_PASSWORD=123 -e WORDPRESS_DB_NAME=wp -p 8080:80 -d wordpress:latest
-
-#inspeccinamos la red y copiamos la ip para conectarme al wordpress
-docker inspect my-network
 
 #instalar docker compose verificar para cambiar la version si es necesario
 https://docs.docker.com/compose/install/standalone/
@@ -219,14 +180,7 @@ docker login
 #subir la imagen al repositorio
 docker push nombre_usurio/debianapache:latest
 
-#KUBERNETES 
-https://kubernetes.io/docs/home/
 
-#instalar kubernetes Set up a K8s cluster -> Learning environment -> Minikube ->debian package
-curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube_latest_amd64.deb
-sudo dpkg -i minikube_latest_amd64.deb
-
-#Instalar un hypervisor para minikube
 
 
 

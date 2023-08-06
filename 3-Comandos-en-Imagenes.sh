@@ -10,9 +10,6 @@ docker ps  images -n 5
 #Borrar una imagen
 docker images rm IMAGE_ID
 
-#borrar todas las imagenes que ya tienen stop
-docker rm $(docker ps -aq)
-
 #colocarle un nombre a la imagen
 docker run -it --name nombre_imagen
 
