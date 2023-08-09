@@ -1,0 +1,16 @@
+#el docker ignore funciona igual que .gitignore pero para docker
+
+node_modules/
+dockerfile
+
+.git
+.dockerignore
+.gitignore
+
+
+
+
+
+
+
+

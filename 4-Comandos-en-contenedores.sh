@@ -14,6 +14,7 @@ docker container run \
 > --env MARIADB_RANDOM_ROOT_PASSWORD=root-secret-password \
 > --env MARIADB_DATABASE=nombredb-mariadb \
 > --env volume prueba_volume:/var/lib/mysql \
+> --env network my-network \
 > mariadb:jammy
 
 #ver los logs de los containers
