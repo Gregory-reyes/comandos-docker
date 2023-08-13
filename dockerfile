@@ -19,9 +19,10 @@ COPY . .
 RUN npm run test
 
 
-#construir el builderx llamando builder
+#construir el builderx llamando produccion
 FROM node:19.2.0-alpine3.16 as prod-deps
 WORKDIR /app
+COPY package.json ./
 #instalar unicamente las dependencias de producción
 RUN npm install --prod
 

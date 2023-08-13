@@ -6,15 +6,15 @@ docker container run --name nombredb-postgres -dp 5432:5432 -e POSTGRES_PASSWORD
 docker pull mariadb:lts-jammy
 
 #crear un contenedor mariadb version jammy con variable de entorno
-docker container run \
-> -dp 3306:3306 \
-> -name maria-db \
-> --env MARIADB_USER=example-user \
-> --env MARIADB_PASSWORD=user-password \
-> --env MARIADB_RANDOM_ROOT_PASSWORD=root-secret-password \
-> --env MARIADB_DATABASE=nombredb-mariadb \
-> --env volume prueba_volume:/var/lib/mysql \
-> --env network my-network \
+docker container run\
+> -dp 3306:3306\
+> -name maria-db\
+> --env MARIADB_USER=example-user\
+> --env MARIADB_PASSWORD=user-password\
+> --env MARIADB_RANDOM_ROOT_PASSWORD=root-secret-password\
+> --env MARIADB_DATABASE=nombredb-mariadb\
+> --env volume prueba_volume:/var/lib/mysql\
+> --env network my-network\
 > mariadb:jammy
 
 #ver los logs de los containers
