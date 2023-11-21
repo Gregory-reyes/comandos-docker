@@ -26,8 +26,11 @@ services:
        WORDPRESS_DB_USER: wordpressuser
        WORDPRESS_DB_PASSWORD: Gregory
        WORDPRESS_DB_NAME: wordpress
+     volumes:
+       - wordpress_data:/var/www/html
 volumes:
     db_data: {}
+    wordpress_data: {}
 
 
 
