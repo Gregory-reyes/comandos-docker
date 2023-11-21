@@ -26,13 +26,16 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin 
 #Verifique que la instalación de Docker Engine
 sudo docker run hello-world
 
+#creacion de un grupo de docker
+sudo groupadd docker
+
 #Comando para dar permisos al usuario https://docs.docker.com/engine/install/linux-postinstall/
 sudo usermod -aG docker $USER
 
 #creación de fichero de configuración https://docs.docker.com/config/containers/logging/json-file/
 sudo nano /etc/docker/daemon.json
 
-#pegamos la rotacion de los logs 
+#Definimos parametros del tamaño maximo del sistema pegamos la rotacion de los logs 
 {
   "log-driver": "json-file",
   "log-opts": {
