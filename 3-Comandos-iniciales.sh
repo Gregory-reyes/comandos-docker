@@ -13,6 +13,9 @@ docker ps -l
 #mirar los ultimos 5 contenedores creados
 docker ps -n 5
 
+#comado para ver de forma resumida el docker ps
+docker ps --format "table {{.ID}}\t{{.Image}}\t{{.Names}}\t{{.Ports}}"
+
 #interactuar con el docker inactivo y entrar al contenedor y ejecutar instruciones
 docker run -it debian bash
 
