@@ -1,170 +1,132 @@
 #!/bin/bash
 
-version: '3.8'
+  version: '3.8'
 
-services:
-#database engine service
-  maria_db_prod:
-    container_name: wordpress-mariadb-1
-    image: mariadb:10.8
-    restart: always
-    networks:
-     - env_prod
-    ports:
-      - 3306
-    volumes:
-        #allow *.sql, *.sql.gz, or *.sh and is execute only if data directory is empty
-      - volume_wordpress_wordpress_data
-      - 
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: qwerty
-      POSTGRES_DB: postgres    
+  services:
+    maria_db_prod:
+      container_name: wordpress-mariadb-1
+      image: mariadb:10.8
+      restart: always
+      ports:
+        - 3306
+      volumes:
+        - maria_db_prod:/var/lib/mysql
+      environment:
+        MARIA_PASSWORD: qwerty
+        MARIADB_USER: mariadbuser
+        MARIADB_ROOT_PASSWORD: qwerty
+        MARIADB_DATABASE: mariadb
 
 
-  postgres_db_prep:
-    container_name: postgres_prep
-    image: postgres:latest
-    restart: always
-    networks:
-     - env_prep
-    ports:
-      - 4432:5432
-    volumes:
-        #allow *.sql, *.sql.gz, or *.sh and is execute only if data directory is empty
-      - ./dbfiles:/docker-entrypoint-initdb.d
-      - /var/lib/postgres_data_prep:/var/lib/postgresql/data
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: qwerty
-      POSTGRES_DB: postgres    
-
-#database admin service
-  adminer:
-    container_name: adminer
-    image: adminer
-    restart: always
-    depends_on: 
-      - postgres_db_prod
-      - postgres_db_prep
-    networks:
-     - env_prod
-     - env_prep
-    ports:
-       - 9090:8080
+    wordpress_8080:
+      depends_on:
+        - maria_db_prod
+      container_name: wordpress-wordpress-1
+      image: bitnami/wordpress:6
+      ports:
+        - "8080:8080"
+        - "8443:8443"
+      restart: always
+      networks:
+        - wordpress-prod
+      environment:
+        WORDPRESS_DATABASE_USER: wordpressuser
+        WORDPRESS_DATABASE_PASSWORD: Gregory
+        WORDPRESS_DB_HOST: maria_db_prod:3306
+        WORDPRESS_PASSWORD: contraseña
+        WORDPRESS_USERNAME: admin
+        WORDPRESS_SMTP_HOST: smtp.mailgun.org
+        WORDPRESS_SMTP_PORT: 587
+        WORDPRESS_SMTP_USER: no-reply@notifications.lazarillo.app
+        WORDPRESS_SMTP_PASSWORD: contraseña    
+      volumes:
+        - wordpress_prod:/var/www/html
 
 
-#Billin app backend service
-  billingapp-back-prod:
-    build:
-      context: ./java
-      args:
-        - JAR_FILE=billing-0.0.3-SNAPSHOT.jar
-    container_name: billingApp-back-prod     
-    environment:
-       - JAVA_OPTS=
-         -Xms256M 
-         -Xmx256M         
-    depends_on:     
-      - postgres_db_prod
-    networks:
-     - env_prod
-    ports:
-      - 8080:8080 
+    maria_db_main:
+      container_name: wordpress-main-mariadb-1
+      image: mariadb:10.8
+      restart: always
+      ports:
+        - 3306
+      volumes:
+        - maria_db_main:/var/lib/mysql
+      environment:
+        MARIA_PASSWORD: qwerty
+        MARIADB_USER: mariadbuser
+        MARIADB_ROOT_PASSWORD: qwerty
+        MARIADB_DATABASE: mariadb    
 
-#Billin app backend service
-  billingapp-back-prep:
-    build:
-      context: ./java
-      args:
-        - JAR_FILE=billing-0.0.2-SNAPSHOT.jar
-    container_name: billingApp-back-prep      
-    environment:
-       - JAVA_OPTS=
-         -Xms256M 
-         -Xmx256M         
-    depends_on:     
-      - postgres_db_prep
-    networks:
-     - env_prep
-    ports:
-      - 7080:7080 
-
-#Billin app frontend service
-  billingapp-front-prod:
-    build:
-      context: ./angular 
-    deploy:   
-        resources:
-           limits: 
-              cpus: "0.15"
-              memory: 250M
-#recusos dedicados, mantiene los recursos disponibles del host para el contenedor
-           reservations:
-              cpus: "0.1"
-              memory: 128M
-    #container_name: billingApp-front
-    depends_on:     
-      -  billingapp-back-prod
-#rango de puertos para escalar   
-    networks:
-     - env_prod 
-    ports:
-      - 80:80 
+    wordpress_8081:
+      depends_on:
+        - maria_db_main
+      container_name: wordpress-main-wordpress-1
+      image: bitnami/wordpress:6
+      ports:
+        - "8081:8080"
+        - "8444:8443"
+      restart: always
+      networks:
+        - wordpress-main
+      environment:
+        WORDPRESS_DATABASE_USER: wordpressuser
+        WORDPRESS_DATABASE_PASSWORD: Gregory
+        WORDPRESS_DB_HOST: maria_db_prod:3306
+        WORDPRESS_PASSWORD: contraseña
+        WORDPRESS_USERNAME: admin
+        WORDPRESS_SMTP_HOST: smtp.mailgun.org
+        WORDPRESS_SMTP_PORT: 587
+        WORDPRESS_SMTP_USER: contraseña
+      volumes:
+        - wordpress_main:/var/www/html
 
 
-#Billin app frontend service
-  billingapp-front-prep:
-    build:
-      context: ./angular 
-    deploy:   
-        resources:
-           limits: 
-              cpus: "0.15"
-              memory: 250M
-#recusos dedicados, mantiene los recursos disponibles del host para el contenedor
-           reservations:
-              cpus: "0.1"
-              memory: 128M
-    #container_name: billingApp-front
-    depends_on:     
-      - billingapp-back-prep
-#rango de puertos para escalar   
-    networks:
-     - env_prep 
-    ports:
-      - 81:81
+    maria_db_testing:
+      container_name: wordpress-testing-mariadb-1
+      image: mariadb:10.8
+      restart: always
+      ports:
+        - 3306
+      volumes:
+        - maria_db_testing:/var/lib/mysql
+      environment:
+        MARIA_PASSWORD: qwerty
+        MARIADB_USER: mariadbuser
+        MARIADB_ROOT_PASSWORD: qwerty
+        MARIADB_DATABASE: mariadb    
 
-networks:
-  env_prod:
-    driver: bridge  
-    #activate ipv6
-    driver_opts: 
-            com.docker.network.enable_ipv6: "true"
-    #IP Adress Manager
-    ipam: 
-        driver: default
-        config:
-        - 
-          subnet: 172.16.232.0/24
-          gateway: 172.16.232.1
-        - 
-          subnet: "2001:3974:3979::/64"
-          gateway: "2001:3974:3979::1"
+    wordpress_8083:
+      depends_on:
+        - maria_db_testing
+      container_name: wordpress-testing-wordpress-1
+      image: bitnami/wordpress:6
+      ports:
+        - "8083:8080"
+        - "8445:8443"
+      restart: always
+      networks:
+        - wordpress-testing
+      environment:
+        WORDPRESS_DATABASE_USER: wordpressuser
+        WORDPRESS_DATABASE_PASSWORD: Gregory
+        WORDPRESS_DB_HOST: maria_db_prod:3306
+        WORDPRESS_PASSWORD: contraseña
+        WORDPRESS_USERNAME: admin
+        WORDPRESS_SMTP_HOST: smtp.mailgun.org
+        WORDPRESS_SMTP_PORT: 587
+        WORDPRESS_SMTP_USER: contraseña
+      volumes:
+        - wordpress_testing:/var/www/html
 
-
-  env_prep:   
-    driver: bridge  
-    #activate ipv6
-    driver_opts: 
-            com.docker.network.enable_ipv6: "true"
-    #IP Adress Manager
-    ipam:
-        driver: default
-        config:
-        - 
-          subnet: 172.16.235.0/24
-          gateway: 172.16.235.1
-        - 
-          subnet: "2001:3984:3989::/64"
-          gateway: "2001:3984:3989::1"
+  networks:
+    wordpress-prod:
+    wordpress-main:
+    wordpress-testing:      
+        
+  volumes:
+    maria_db_prod: {}
+    wordpress_prod: {}
+    maria_db_main: {}
+    wordpress_main: {}
+    maria_db_testing: {}
+    wordpress_testing: {}
