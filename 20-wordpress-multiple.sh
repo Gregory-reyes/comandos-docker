@@ -13,8 +13,8 @@
         - maria_db_prod:/var/lib/mysql
       environment:
         MARIADB_DATABASE: bitnami_wordpress
-        MARIADB_PASSWORD: oZ3BZBRhg31xNFtiCDI6zC
-        MARIADB_ROOT_PASSWORD: oZ3BZBRhg31xNFtiCDI6zC
+        MARIADB_PASSWORD: password_1
+        MARIADB_ROOT_PASSWORD: password_1
         MARIADB_USER: wp
         MARIADB_MYSQL_LOCALHOST_USER: true
 
@@ -33,14 +33,14 @@
       environment:
         WORDPRESS_SKIP_BOOTSTRAP: 'yes'
         WORDPRESS_DATABASE_NAME: bitnami_wordpress
-        WORDPRESS_DATABASE_PASSWORD: oZ3BZBRhg31xNFtiCDI6zC
+        WORDPRESS_DATABASE_PASSWORD: password_1
         WORDPRESS_DATABASE_USER: wp
-        WORDPRESS_PASSWORD: Zoovm0YeYRGlbnTxdW6Jt3
+        WORDPRESS_PASSWORD: password_2
         WORDPRESS_USERNAME: admin
         WORDPRESS_SMTP_HOST: smtp.mailgun.org
         WORDPRESS_SMTP_PORT: 587
-        WORDPRESS_SMTP_USER: no-reply@notifications.lazarillo.app
-        WORDPRESS_SMTP_PASSWORD: 4a44adc7d49637951f8be0bb5c505842-75cd784d-35a4f256  
+        WORDPRESS_SMTP_USER: no-reply@notifications.empresa.app
+        WORDPRESS_SMTP_PASSWORD: password_smtp 
       volumes:
         - wordpress_prod:/var/www/html
 
@@ -93,8 +93,8 @@
         - maria_db_testing:/var/lib/mysql
       environment:
         MARIADB_DATABASE: bitnami_wordpress
-        MARIADB_PASSWORD: oZ3BZBRhg31xNFtiCDI6zC
-        MARIADB_ROOT_PASSWORD: oZ3BZBRhg31xNFtiCDI6zC
+        MARIADB_PASSWORD: password_1
+        MARIADB_ROOT_PASSWORD: password_1
         MARIADB_USER: wp
         MARIADB_MYSQL_LOCALHOST_USER: 'true' 
 
@@ -117,7 +117,7 @@
         WORDPRESS_USERNAME: admin
         WORDPRESS_SMTP_HOST: smtp.mailgun.org
         WORDPRESS_SMTP_PORT: 587
-        WORDPRESS_SMTP_USER: contraseña
+        WORDPRESS_SMTP_USER: password_smtp
       volumes:
         - wordpress_testing:/var/www/html
 
